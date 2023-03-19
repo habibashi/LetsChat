@@ -11,17 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('company', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('description');
+            $table->string('logo');
+            $table->boolean('active');
             $table->string('email');
-            $table->enum('gender', ['M', 'F']);
-            $table->string('job_title');
-            $table->string('photo')->nullable();
-            $table->dateTime('started_working_on');
-            $table->enum('role', ['employee', 'manager', 'admin'])->default('employee');
-            $table->string('password');
-            $table->rememberToken();
             $table->timestamps();
         });
     }
@@ -31,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('company');
     }
 };
