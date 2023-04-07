@@ -11,10 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('messages', function (Blueprint $table) {
-            $table->id();
-            $table->string("messages");
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger('company_id');
+            $table->foreign('company_id')->references('id')->on('company');
         });
     }
 
@@ -23,6 +22,9 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('messages');
+        Schema::table('users', function (Blueprint $table) {
+            $table->unsignedBigInteger(['company_id']);
+            $table->dropColumn('company_id');
+        });
     }
 };

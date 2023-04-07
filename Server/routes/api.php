@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,6 +15,13 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+// Route::get("data", [UserController::class, 'getData']);
+
+Route::post('/users/register', [UserController::class, 'register']);
+Route::post('/users/login', [UserController::class, 'login']);
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('/users', [UserController::class, 'hh']);

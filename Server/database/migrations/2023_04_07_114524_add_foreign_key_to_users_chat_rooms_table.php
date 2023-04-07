@@ -23,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users_chat_rooms', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
+            $table->unsignedBigInteger(['user_id']);
             $table->dropColumn('user_id');
         });
     }

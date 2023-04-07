@@ -21,7 +21,9 @@ return new class extends Migration
             $table->dateTime('started_working_on');
             $table->enum('role', ['employee', 'manager', 'admin'])->default('employee');
             $table->string('password');
+            // $table->foreign('company_id')->references('id')->on('company');
             $table->rememberToken();
+            
             $table->timestamps();
         });
     }
