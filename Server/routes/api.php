@@ -1,8 +1,11 @@
 <?php
 
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Models\Company;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,13 +18,32 @@ use App\Http\Controllers\UserController;
 |
 */
 
-// Route::get("data", [UserController::class, 'getData']);
+// Public Routes
+Route::post('/users/login', [UserController::class, 'Login']);
 
-Route::post('/users/register', [UserController::class, 'register']);
-Route::post('/users/login', [UserController::class, 'login']);
+// Protected Routes
+Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Admin 
+    Route::get('/getAllCompany', [CompanyController::class, 'GetAllCompany']);
+    Route::post('/createAccount', [UserController::class, 'CreateAccount']);
+    Route::post('/createCompany', [CompanyController::class, 'CreateCompany']);
+    Route::put('/activeCompany', [CompanyController::class, 'ActiveCompany']);
+    // Manager
+    Route::put('/editCompany', [CompanyController::class, 'EditCompany']);
+    Route::get('/getActiveUsers', [UserController::class, 'GetActiveUsers']);
+    Route::put('/activeUsers', [CompanyController::class, 'ActiveUsers']);
+    // Profile
+    Route::put('/editProfile', [UserController::class, 'EditProfile']);
+    // Chat
+    Route::get('/adminPeople', [ChatController::class, 'AdminPeople']); 
+    Route::get('/people', [ChatController::class, 'People']);
+    Route::get('/adminGroups', [ChatController::class, 'AdminGroups']);
+    Route::get('/getGroupCompany', [CompanyController::class, 'GetGroupCompany']);
+    Route::get('/adminUsers', [ChatController::class, 'AdminUsers']);
+    Route::get('/employeeManagerUsers', [ChatController::class, 'EmployeeManagerUsers']);
+});
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', [UserController::class, 'hh']);
