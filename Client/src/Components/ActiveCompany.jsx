@@ -13,15 +13,18 @@ const ActiveCompany = () => {
 
     const dispatch = useDispatch()
 
-    const { companies, isLoading, isError, message } = useSelector((state) => state.admin);
+    const { companies, isLoading, isError, message, isSuccessForm } = useSelector((state) => state.admin);
 
     useEffect(() => {
         if (isError) {
             toast.error(message);
         }
+        if (isSuccessForm) {
+            toast.success(message.message)
+        }
         dispatch(reset());
         dispatch(getCompanies());
-    }, [dispatch]);
+    }, [dispatch, isError, isSuccessForm, message]);
 
     const onChangeHandler = (event) => {
         setFormData((prevState) => ({

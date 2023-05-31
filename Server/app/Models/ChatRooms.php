@@ -10,7 +10,7 @@ class ChatRooms extends Model
     use HasFactory;
 
     protected $fillable = [
-        
+        'company_id'
     ];
 
     public function usersChatRooms() {
@@ -19,5 +19,9 @@ class ChatRooms extends Model
 
     public function messages() {
         return $this->hasMany(messages::class);
+    }
+
+    public function company() {
+        return $this->belongsTo(company::class);
     }
 }

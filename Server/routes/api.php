@@ -5,7 +5,6 @@ use App\Http\Controllers\CompanyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
-use App\Models\Company;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,13 +19,12 @@ use App\Models\Company;
 
 // Public Routes
 Route::post('/users/login', [UserController::class, 'Login']);
-
 // Protected Routes
 Route::group(['middleware' => ['auth:sanctum']], function () {
-    // Admin 
-    Route::get('/getAllCompany', [CompanyController::class, 'GetAllCompany']);
+    // Admin
     Route::post('/createAccount', [UserController::class, 'CreateAccount']);
     Route::post('/createCompany', [CompanyController::class, 'CreateCompany']);
+    Route::get('/getAllCompany', [CompanyController::class, 'GetAllCompany']);
     Route::put('/activeCompany', [CompanyController::class, 'ActiveCompany']);
     // Manager
     Route::put('/editCompany', [CompanyController::class, 'EditCompany']);
@@ -41,6 +39,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/getGroupCompany', [CompanyController::class, 'GetGroupCompany']);
     Route::get('/adminUsers', [ChatController::class, 'AdminUsers']);
     Route::get('/employeeManagerUsers', [ChatController::class, 'EmployeeManagerUsers']);
+    Route::get('/peopleRooms', [ChatController::class, 'peopleRooms']);
+    Route::get('/adminPeopleRooms', [ChatController::class, 'AdminPeopleRooms']);
+    Route::get('/peopleChatPage/{roomId}', [ChatController::class, 'PeopleChatPage']);
+    Route::post('/message', [ChatController::class, 'CreateMessage']);
+    Route::post('/createGroupMessage', [ChatController::class, 'createGroupMessage']);
+    Route::get('groupChatPage/{id}', [ChatController::class, 'GroupChatPage']);
+    Route::get('/user/{id}', [UserController::class, 'User']);
+    
+    Route::post('/pusher/auth', [ChatController::class, 'auth']);
+
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {

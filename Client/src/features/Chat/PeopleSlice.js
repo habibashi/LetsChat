@@ -3,6 +3,8 @@ import PeopleServer from "./PeopleServer";
 
 const initialState = {
   people: [],
+  room: [],
+  newMessage: [],
   adminPeople: [],
   adminUsers: [],
   employeeManagerUsrs: [],
@@ -11,6 +13,44 @@ const initialState = {
   isLoading: false,
   message: "",
 };
+
+// Create Message
+export const createMessage = createAsyncThunk(
+  "people/createMessage",
+  async (form, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await PeopleServer.createMessage(form, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
+
+// Get user by Id
+export const getRoom = createAsyncThunk(
+  "people/getRoom",
+  async (room_id, thunkAPI) => {
+    try {
+      const token = thunkAPI.getState().auth.user.token;
+      return await PeopleServer.getRoom(room_id, token);
+    } catch (error) {
+      const message =
+        (error.response &&
+          error.response.data &&
+          error.response.data.message) ||
+        error.message ||
+        error.toString();
+      return thunkAPI.rejectWithValue(message);
+    }
+  }
+);
 
 // Employee Manager Users
 export const getEmployeeManagerUsers = createAsyncThunk(
@@ -146,6 +186,30 @@ export const peopleSlice = createSlice({
         state.employeeManagerUsrs = action.payload;
       })
       .addCase(getEmployeeManagerUsers.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(getRoom.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getRoom.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.room = action.payload;
+      })
+      .addCase(getRoom.rejected, (state, action) => {
+        state.isError = true;
+        state.message = action.payload;
+      })
+      .addCase(createMessage.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(createMessage.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.newMessage = action.payload;
+      })
+      .addCase(createMessage.rejected, (state, action) => {
         state.isError = true;
         state.message = action.payload;
       });

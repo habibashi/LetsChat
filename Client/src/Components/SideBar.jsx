@@ -13,17 +13,25 @@ const SideBar = () => {
             <div className="drawer-side">
                 <label htmlFor="my-drawer" className="drawer-overlay"></label>
                 <ul className="menu p-4 w-80 bg-base-100 text-base-content">
-                    <li><NavLink to={"/people"}>People</NavLink></li>
-                    <li><NavLink to={"/group"}>Gropup</NavLink></li>
-                    {user && user.role === "admin" && (
+                    {user?.role === "employee" && (
+                        <>
+                            <li><NavLink to={"/people"}>People</NavLink></li>
+                            <li><NavLink to={"/group"}>Gropup</NavLink></li>
+                        </>
+                    )
+
+                    }
+                    {user?.role === "admin" && (
                         <>
                             <li><NavLink to={"/createAccount"}>Create Account</NavLink></li>
                             <li><NavLink to={"/createCompany"}>Create Company</NavLink></li>
                             <li><NavLink to={"/activeCompany"}>Active Company</NavLink></li>
                         </>
                     )}
-                    {user && user.role === "manager" && (
+                    {user?.role === "manager" && (
                         <>
+                            <li><NavLink to={"/people"}>People</NavLink></li>
+                            <li><NavLink to={"/group"}>Gropup</NavLink></li>
                             <li><NavLink to={"/editCompany"}>Edit Company</NavLink></li>
                             <li><NavLink to={"/activeUsers"}>Active Users</NavLink></li>
                         </>

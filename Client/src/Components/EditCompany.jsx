@@ -14,7 +14,7 @@ const EditCompany = () => {
     })
 
     const { name, email, description, logo } = formData
-    const { isLoading, isError, message } = useSelector((state) => state.manager);
+    const { isLoading, isError, message, isSuccessForm } = useSelector((state) => state.manager);
 
     const dispatch = useDispatch();
 
@@ -22,8 +22,11 @@ const EditCompany = () => {
         if (isError) {
             toast.error(message);
         }
+        if (isSuccessForm) {
+            toast.success(message.message);
+        }
         dispatch(reset());
-    }, [dispatch]);
+    }, [dispatch, isSuccessForm, isError, message]);
 
     const onChangeHandler = (event) => {
         setFormData((prevState) => ({

@@ -17,19 +17,22 @@ const CreateAccount = () => {
         company_id: ''
     })
 
-    const { name, email, password, password_confirmation, gender, job_title, started_working_on, role, company_id } = formData
+    const { name, email, password, password_confirmation, job_title, started_working_on, company_id } = formData
 
     const dispatch = useDispatch()
 
-    const { companies, isLoading, isError, message } = useSelector((state) => state.admin);
+    const { companies, isLoading, isError, message, isSuccessForm } = useSelector((state) => state.admin);
 
     useEffect(() => {
         if (isError) {
             toast.error(message);
         }
+        if (isSuccessForm) {
+            toast.success(message.message);
+        }
         dispatch(reset());
         dispatch(getCompanies());
-    }, [dispatch]);
+    }, [dispatch, isError, message, isSuccessForm]);
 
     const onChangeHandler = (event) => {
         setFormData((prevState) => ({
@@ -55,11 +58,12 @@ const CreateAccount = () => {
             company_id: ''
         })
 
+
     }
     return (
         <div className='pl-16 pt-5 pr-16'>
             <div>
-                <h1 className='text-4xl'>Craete Account</h1>
+                <h1 className='text-4xl'>Create Account</h1>
                 <hr className='mt-10  bg-navBgColor rounded md:my-10' />
             </div>
             <form onSubmit={onSubmitHandler} className='flex gap-5 flex-wrap'>

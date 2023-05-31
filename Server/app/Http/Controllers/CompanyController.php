@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatRooms;
 use App\Models\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CompanyController extends Controller
 {
@@ -41,8 +43,12 @@ class CompanyController extends Controller
     }
 
     public function GetGroupCompany() {
-        $id = Auth::user()->company_id;
-        return Company::find($id);
+        $id = auth()->user()->company_id;
+
+        return ChatRooms::join('companies', 'chat_rooms.company_id', '=', 'companies.id')
+        ->where('companies.id', $id)
+        ->select('chat_rooms.id', 'companies.name', 'companies.email', 'companies.logo')
+        ->get();
     }
 
     public function EditCompany(Request $request) {
@@ -66,7 +72,7 @@ class CompanyController extends Controller
         $id = Auth::user()->id;
         $editData = User::find($id);
         if ($editData->role !== 'admin') {
-            return "Sorry This account must be Admin";
+            return "Sorry, this account must be an Admin";
         }
 
         $formFields = $request->validate([
@@ -76,16 +82,31 @@ class CompanyController extends Controller
             'active' => ['required'],
             'email' => ['required', 'string', 'email', 'unique:companies,email'],
         ]);
-        
-        // Create user
-        Company::create([
-            'name' => $formFields['name'],
-            'description' => $formFields['description'],
-            'logo' => $formFields['logo'],
-            'active' => $formFields['active'],
-            'email' => $formFields['email']
-        ]);
-        
-        return response()->json(['message' => 'Company created successfully'], 201);
+
+        try {
+            DB::beginTransaction();
+
+            // Create Company
+            $company = Company::create([
+                'name' => $formFields['name'],
+                'description' => $formFields['description'],
+                'logo' => $formFields['logo'],
+                'active' => $formFields['active'],
+                'email' => $formFields['email']
+            ]);
+
+            // Create Chat Rooms for the Company
+            ChatRooms::create([
+                'company_id' => $company->id
+            ]);
+
+            DB::commit();
+
+            return response()->json(['message' => 'Company created successfully'], 201);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['message' => 'Company creation failed'], 500);
+        }
     }
+
 }

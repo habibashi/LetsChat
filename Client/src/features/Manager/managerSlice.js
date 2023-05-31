@@ -6,6 +6,7 @@ const initialState = {
   users: [],
   isError: false,
   isSuccess: false,
+  isSuccessForm: false,
   isLoading: false,
   message: "",
 };
@@ -85,7 +86,7 @@ export const managerSlice = createSlice({
       })
       .addCase(editCompany.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        state.isSuccessForm = true;
         state.message = action.payload;
       })
       .addCase(editCompany.rejected, (state, action) => {
@@ -98,7 +99,7 @@ export const managerSlice = createSlice({
       })
       .addCase(activeUsers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        state.isSuccessForm = true;
         state.message = action.payload;
       })
       .addCase(activeUsers.rejected, (state, action) => {

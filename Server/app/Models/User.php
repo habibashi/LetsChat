@@ -52,16 +52,14 @@ class User extends Authenticatable
     }
 
     public function usersChatRooms() {
-        return $this->hasMany(users_chat_rooms::class);
+        return $this->hasMany(usersChatRooms::class);
     }
 
-    // public function chatsAsUser1()
-    // {
-    //     return $this->hasMany(Chat::class, 'user1_id');
-    // }
+    public function peopleChatRoom1() {
+        return $this->hasMany(PeopleChatRoom::class, 'user1_id');
+    }
 
-    // public function chatsAsUser2()
-    // {
-    //     return $this->hasMany(Chat::class, 'user2_id');
-    // }
+    public function peopleChatRoom2() {
+        return $this->hasMany(PeopleChatRoom::class, 'user2_id');
+    }
 }

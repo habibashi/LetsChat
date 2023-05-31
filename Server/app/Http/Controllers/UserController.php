@@ -2,38 +2,48 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ChatRooms;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PeopleChatRoom;
+use App\Models\UsersChatRooms;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-
+    public function User(Request $request) {
+        $userId = $request->route('id');
+        return User::find($userId);
+    }
+    
     public function GetUsers() {
         return User::all();
     }
 
     public function GetActiveUsers() {
         $id = Auth::user()->company_id;
-
         return User::where('company_id', $id)->get();
     }
 
-    // Create Accounts
-    public function createAccount(Request $request) {
-        $formFields = $request->validate([
-            'name' => ['required', 'min:3'],
-            'email' => ['required', 'string', 'email', 'unique:users,email'],
-            'password' => ['required', 'string', 'confirmed', 'min:8'],
-            'gender' => ['required'],
-            'job_title' => ['required'],
-            'started_working_on' => ['required'],
-            'role' => ['required'],
-            'company_id' => ['required'],
-        ]);
+    public function createAccount(Request $request)
+{
+    $formFields = $request->validate([
+        'name' => ['required', 'min:3'],
+        'email' => ['required', 'string', 'email', 'unique:users,email'],
+        'password' => ['required', 'string', 'confirmed', 'min:8'],
+        'gender' => ['required'],
+        'job_title' => ['required'],
+        'started_working_on' => ['required'],
+        'role' => ['required'],
+        'company_id' => ['required'],
+    ]);
+
+    try {
+        DB::beginTransaction();
         // Create user
-        User::create([
+        $user = User::create([
             'name' => $formFields['name'],
             'email' => $formFields['email'],
             'password' => bcrypt($formFields['password']),
@@ -43,8 +53,37 @@ class UserController extends Controller
             'role' => $formFields['role'],
             'company_id' => $formFields['company_id'],
         ]);
+
+        $users = User::where('company_id', $formFields['company_id'])->get();
+
+        $rooms = ChatRooms::where('company_id', $formFields['company_id'])->get();
+        
+        foreach ($users as $getUser) {
+            if ($user->id != $getUser->id) {
+                PeopleChatRoom::create([
+                    'user1_id' => $getUser->id,
+                    'user2_id' => $user->id
+                ]);
+
+                
+            }
+        }
+        foreach ($rooms as $room) {
+                UsersChatRooms::create([
+                    'user_id' => $user->id,
+                    'chatRoom_id' => $room->id
+                ]);
+        }
+        
+        DB::commit();
+
         return response()->json(['message' => 'User created successfully'], 201);
+    } catch (\Exception $e) {
+        DB::rollback();
+        return response()->json(['message' => 'User creation failed'], 500);
     }
+}
+
 
     // login 
     public function Login(Request $request) {
@@ -52,7 +91,6 @@ class UserController extends Controller
             'email' => 'required|string',
             'password' => 'required'
         ]);
-        //->with('company')
         $user = User::where('email', $formFields['email'])->first();
 
         
@@ -101,8 +139,10 @@ class UserController extends Controller
         $editData->job_title = $request->job_title;
         $editData->photo = $request->photo;
         
-        if (Hash::check($request['currPass'], $editData->password)){
-            // Perform actions if current password matches
+        if (!Hash::check($request['currPass'], $editData->password)){
+            return response([
+                'message' => 'Incorrect curr password'
+            ], 400);
         }
         
         $formFields = $request->validate([

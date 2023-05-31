@@ -2,6 +2,34 @@ import axios from "axios";
 
 const API_URL = "http://127.0.0.1:8000/api/";
 
+// Create Message
+const createMessage = async (form, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const { data } = await axios.post(API_URL + "message", form, config);
+
+  return data;
+};
+
+// Get User By Id
+const getRoom = async (room_id, token) => {
+  const config = {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  };
+
+  const { data } = await axios.get(
+    API_URL + `peopleChatPage/${room_id}`,
+    config
+  );
+  return data;
+};
+
 // Get Admin Users
 const getAdminUsers = async (token) => {
   const config = {
@@ -10,7 +38,7 @@ const getAdminUsers = async (token) => {
     },
   };
 
-  const { data } = await axios.get(API_URL + "adminUsers", config);
+  const { data } = await axios.get(API_URL + "adminPeopleRooms", config);
   return data;
 };
 
@@ -22,7 +50,7 @@ const getEmployeeManagerUsers = async (token) => {
     },
   };
 
-  const { data } = await axios.get(API_URL + "employeeManagerUsers", config);
+  const { data } = await axios.get(API_URL + "peopleRooms", config);
   return data;
 };
 
@@ -58,6 +86,8 @@ const PeopleService = {
   getAdminPeople,
   getAdminUsers,
   getEmployeeManagerUsers,
+  getRoom,
+  createMessage,
 };
 
 export default PeopleService;

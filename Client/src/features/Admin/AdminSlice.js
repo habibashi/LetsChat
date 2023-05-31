@@ -5,6 +5,7 @@ const initialState = {
   companies: [],
   isError: false,
   isSuccess: false,
+  isSuccessForm: false,
   isLoading: false,
   message: "",
 };
@@ -103,7 +104,7 @@ export const adminSlice = createSlice({
       })
       .addCase(createAccount.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        state.isSuccessForm = true;
         state.message = action.payload;
       })
       .addCase(createAccount.rejected, (state, action) => {
@@ -116,7 +117,7 @@ export const adminSlice = createSlice({
       })
       .addCase(createCompany.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        state.isSuccessForm = true;
         state.message = action.payload;
       })
       .addCase(createCompany.rejected, (state, action) => {
@@ -141,7 +142,7 @@ export const adminSlice = createSlice({
       })
       .addCase(activeCompany.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.isSuccess = true;
+        state.isSuccessForm = true;
         state.message = action.payload;
       })
       .addCase(activeCompany.rejected, (state, action) => {

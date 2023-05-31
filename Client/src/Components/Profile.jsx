@@ -27,8 +27,10 @@ const Profile = () => {
         if (isError) {
             toast.error(message);
         }
-        dispatch(reset());
-    }, [dispatch]);
+        if (isSuccess) {
+            toast.success(message.message)
+        }
+    }, [dispatch, isError, message, isSuccess]);
 
     const onChangeHandler = (event) => {
         setFormData((prevState) => ({
@@ -50,10 +52,6 @@ const Profile = () => {
 
         if (newPass !== newPass_confirmation && newPass < 8) {
             return toast.error("new Password must be greater than 8 character ")
-        }
-
-        if (isSuccess) {
-            return toast.success("Updated")
         }
 
         dispatch(editProfile(formData));

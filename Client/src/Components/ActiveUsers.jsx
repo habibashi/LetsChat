@@ -14,12 +14,9 @@ const ActiveUsers = () => {
 
     const dispatch = useDispatch()
 
-    const { users, isLoading, isError, message } = useSelector((state) => state.manager);
+    const { users, isLoading } = useSelector((state) => state.manager);
 
     useEffect(() => {
-        if (isError) {
-            toast.error(message);
-        }
         dispatch(reset());
         dispatch(getActiveUsers());
     }, [dispatch]);

@@ -20,4 +20,9 @@ class Company extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function chat_room()
+    {
+        return $this->hasMany(ChatRooms::class);
+    }
 }

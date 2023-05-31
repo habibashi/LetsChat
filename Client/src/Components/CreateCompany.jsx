@@ -15,7 +15,7 @@ const CreateCompany = () => {
     })
 
     const { name, email, description, logo } = formData
-    const { isLoading, isError, message } = useSelector((state) => state.admin);
+    const { isLoading, isError, message, isSuccessForm } = useSelector((state) => state.admin);
 
     const dispatch = useDispatch();
 
@@ -23,8 +23,11 @@ const CreateCompany = () => {
         if (isError) {
             toast.error(message);
         }
+        if (isSuccessForm) {
+            toast.success(message.message);
+        }
         dispatch(reset());
-    }, [dispatch]);
+    }, [dispatch, isSuccessForm, isError, message]);
 
     const onChangeHandler = (event) => {
         setFormData((prevState) => ({
